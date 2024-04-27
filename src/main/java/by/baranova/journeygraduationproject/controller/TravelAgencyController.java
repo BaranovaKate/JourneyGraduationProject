@@ -5,6 +5,7 @@ import by.baranova.journeygraduationproject.model.TravelAgency;
 import by.baranova.journeygraduationproject.service.AgencyService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,12 @@ public class TravelAgencyController {
     @GetMapping("/{id}")
     public ResponseEntity<TravelAgency> getTravelAgencyById(
             final @PathVariable Long id) {
-        TravelAgency travelAgency = agencyService.findAgencyById(id);
-        return ResponseEntity.ok(travelAgency);
-
+        try {
+            TravelAgency travelAgency = agencyService.findAgencyById(id);
+            return ResponseEntity.ok(travelAgency);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/all")
@@ -43,19 +47,27 @@ public class TravelAgencyController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTravelAgencyById(
             final @PathVariable Long id) {
-        agencyService.deleteById(id);
-        return ResponseEntity
-                .ok("Successfully deleted the agency with id: " + id);
-
+        try {
+            agencyService.deleteById(id);
+            return ResponseEntity
+                    .ok("Successfully deleted the agency with id: " + id);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> handleAgencyUpdate(
             final @PathVariable Long id,
             final @RequestBody TravelAgencyDto travelAgency) {
-        agencyService.update(id, travelAgency);
-        return ResponseEntity
-                .ok("Successfully updated journey with id " + id);
-
+        try {
+            agencyService.update(id, travelAgency);
+            return ResponseEntity
+                    .ok("Successfully updated journey with id " + id);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
     }
 }
