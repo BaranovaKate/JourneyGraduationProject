@@ -1,6 +1,8 @@
 package by.baranova.journeygraduationproject.repository;
 
+import by.baranova.journeygraduationproject.dto.TravelAgencyDto;
 import by.baranova.journeygraduationproject.model.TravelAgency;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.MutationQuery;
@@ -46,6 +48,20 @@ public class TravelAgencyRepository {
                     .createMutationQuery(
                             "DELETE FROM TravelAgency WHERE id = :id");
             query.setParameter("id", id);
+            query.executeUpdate();
+        });
+    }
+
+    public void update(final Long id, final TravelAgencyDto updatedAgency) {
+        sessionFactory.inTransaction(session -> {
+            final MutationQuery query = session.createMutationQuery("""
+                    UPDATE TravelAgency T SET
+                       T.name = :name
+                    WHERE T.id = :id
+                    """);
+
+            query.setParameter("id", id);
+            query.setParameter("name", updatedAgency.getName());
             query.executeUpdate();
         });
     }
