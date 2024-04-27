@@ -43,6 +43,12 @@ public class TravelAgencyRepository {
     }
 
     public void deleteById(final Long id) {
+        TravelAgency agencyToDelete = findById(id);
+        if (agencyToDelete == null) {
+            throw new EntityNotFoundException(
+                    "Агентство с id " + id + " не найдено");
+        }
+
         sessionFactory.inTransaction(session -> {
             final MutationQuery query = session
                     .createMutationQuery(
@@ -53,6 +59,10 @@ public class TravelAgencyRepository {
     }
 
     public void update(final Long id, final TravelAgencyDto updatedAgency) {
+        if (findById(id) == null) {
+            throw new EntityNotFoundException(
+                    "Агентство с id " + id + " не существует");
+        }
         sessionFactory.inTransaction(session -> {
             final MutationQuery query = session.createMutationQuery("""
                     UPDATE TravelAgency T SET
