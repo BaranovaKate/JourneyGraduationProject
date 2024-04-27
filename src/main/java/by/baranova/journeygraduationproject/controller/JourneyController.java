@@ -2,6 +2,8 @@ package by.baranova.journeygraduationproject.controller;
 
 import by.baranova.journeygraduationproject.dto.JourneyDto;
 import by.baranova.journeygraduationproject.service.JourneyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -13,11 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/journeys")
 @AllArgsConstructor
+@Tag(name = "Работа с путешествиями", description = "Данный "
+        + "контроллер позволяет получать, добавлять, "
+        + "обновлять и удалять путешествия")
 public class JourneyController {
+
     private static final String ERROR = "404 Not Found: {}";
 
     private final JourneyService journeyService;
@@ -25,13 +30,24 @@ public class JourneyController {
     static final Logger LOGGER = LogManager.getLogger(JourneyController.class);
 
     @GetMapping
+    @Operation(
+            method = "GET",
+            summary = "Получить список всех путешествий",
+            description = "Выводит список всех путешествий. "
+                    + "Так же выполняет поиск по стране"
+    )
     public List<JourneyDto> findJourneys() {
         LOGGER.info("Display all Journeys");
         return journeyService.findJourneys();
-
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            method = "GET",
+            summary = "Получить путешествие по id",
+            description = "Выводит путешествие по id,"
+                    + " содержащееся в базе данных"
+    )
     public ResponseEntity<JourneyDto> findJourney(
             final @PathVariable("id") Long id) {
         try {
@@ -44,8 +60,12 @@ public class JourneyController {
         }
     }
 
-
     @PostMapping("/new")
+    @Operation(
+            method = "POST",
+            summary = "Создать путешествие",
+            description = "Создает новое путешествие в базе данных"
+    )
     public String handleJourneyCreation(
             final @Valid @RequestBody JourneyDto journey) {
         journeyService.save(journey);
@@ -54,6 +74,11 @@ public class JourneyController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+            method = "PUT",
+            summary = "Обновить путешествие",
+            description = "Обновляет информацию о путешествии в базе данных"
+    )
     public ResponseEntity<String> handleJourneyUpdate(
             final @PathVariable Long id,
             final @Valid @RequestBody JourneyDto journey) {
@@ -72,6 +97,12 @@ public class JourneyController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(
+            method = "DELETE",
+            summary = "Удалить путешествие по id",
+            description = "Удаляет путешествие по id,"
+                    + " из базы данных"
+    )
     public ResponseEntity<String> handleJourneyDelete(
             final @PathVariable Long id) {
         try {
