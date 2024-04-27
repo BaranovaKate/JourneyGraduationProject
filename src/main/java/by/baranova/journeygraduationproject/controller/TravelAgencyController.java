@@ -36,5 +36,4 @@ public class TravelAgencyController {
         agencyService.save(newTravelAgency);
         return "Successfully created a new agency";
     }
-
 }
