@@ -16,5 +16,4 @@ public class TravelAgencyDto implements Serializable {
     @NotBlank
     @Size(min = 2, max = 20)
     private String name;
-
 }

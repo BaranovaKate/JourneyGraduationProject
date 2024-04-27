@@ -30,5 +30,4 @@ public class JourneyDto implements Serializable {
     private LocalDate dateFromJourney;
 
     private TravelAgencyDto travelAgency;
-
 }
