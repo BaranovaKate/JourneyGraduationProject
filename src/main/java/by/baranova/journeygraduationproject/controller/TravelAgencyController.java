@@ -5,7 +5,6 @@ import by.baranova.journeygraduationproject.model.TravelAgency;
 import by.baranova.journeygraduationproject.service.AgencyService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
