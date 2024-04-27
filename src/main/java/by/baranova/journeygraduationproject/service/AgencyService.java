@@ -19,7 +19,12 @@ public class AgencyService {
     private final JourneyRepository journeyRepository;
 
     public TravelAgency findAgencyById(final Long id) {
-        return travelAgencyRepository.findById(id);
+        TravelAgency agency = travelAgencyRepository.findById(id);
+        if (agency == null) {
+            throw new EntityNotFoundException(
+                    "Agency with ID " + id + " not found");
+        }
+        return agency;
     }
 
     public void save(final TravelAgency travelAgency) {
@@ -31,6 +36,11 @@ public class AgencyService {
     }
 
     public void deleteById(final Long id) {
+        TravelAgency agencyToDelete = findAgencyById(id);
+        if (agencyToDelete == null) {
+            throw new EntityNotFoundException(
+                    "Travel Agency with ID " + id + " not found");
+        }
         List<Journey> journeysWithAgency = journeyRepository
                 .findByTravelAgencyId(id);
         journeysWithAgency.forEach(journey -> journeyRepository
