@@ -12,9 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/journeys")
 @AllArgsConstructor
-public class JourneyController {
 
-    private static final String ERROR = "404 Not Found: {}";
+public class JourneyController {
 
     private final JourneyService journeyService;
 
@@ -38,10 +37,21 @@ public class JourneyController {
         return "Successfully created a new journey";
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String> handleJourneyUpdate(
+            final @PathVariable Long id,
+            final @Valid @RequestBody JourneyDto journey) {
+        journeyService.update(id, journey);
+        return ResponseEntity
+                .ok("Successfully updated journey with id " + id);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> handleJourneyDelete(final @PathVariable Long id) {
+    public ResponseEntity<String> handleJourneyDelete(
+            final @PathVariable Long id) {
         journeyService.deleteById(id);
         return ResponseEntity
                 .ok("Successfully deleted journey with id " + id);
+
     }
 }
