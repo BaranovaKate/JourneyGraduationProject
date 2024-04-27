@@ -5,6 +5,7 @@ import by.baranova.journeygraduationproject.repository.JourneyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,13 +16,12 @@ public class JourneyService {
 
     public JourneyDto findJourneyById(final Long id) {
         return journeyRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException(
-                            "Journey with ID " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Journey with ID " + id + " not found"));
     }
 
     public void deleteById(final Long id) {
         journeyRepository.deleteById(id);
-
     }
 
     public List<JourneyDto> findJourneys() {
@@ -32,4 +32,7 @@ public class JourneyService {
         journeyRepository.save(journeyDto);
     }
 
+    public void update(final Long id, final JourneyDto journey) {
+        journeyRepository.update(id, journey);
+    }
 }
