@@ -1,6 +1,5 @@
 package by.baranova.journeygraduationproject.controller;
 
-import by.baranova.journeygraduationproject.dto.TravelAgencyDto;
 import by.baranova.journeygraduationproject.model.TravelAgency;
 import by.baranova.journeygraduationproject.service.AgencyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +37,13 @@ public class TravelAgencyController {
             description = "Выводит тур агентство по id,"
                     + " содержащеесся в базе данных"
     )
-    public ResponseEntity<TravelAgency> getTravelAgencyById(
-            final @PathVariable Long id) {
+    public ResponseEntity<TravelAgency> getTravelAgencyById(@PathVariable Long id) {
         try {
-            LOGGER.info("Display Travel Agencies by id");
+            LOGGER.info("Fetching Travel Agency with ID: {}", id);
             TravelAgency travelAgency = agencyService.findAgencyById(id);
             return ResponseEntity.ok(travelAgency);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(ERROR, e.getMessage());
+            LOGGER.error("Travel Agency not found with ID: {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -57,8 +55,8 @@ public class TravelAgencyController {
             description = "Выводит список всех тур агентств,"
                     + " содержащихся в базе данных"
     )
-    public List<TravelAgency> getAllTravelAgenciesWithJourneys() {
-        LOGGER.info("Display Travel Agencies");
+    public List<TravelAgency> getAllTravelAgencies() {
+        LOGGER.info("Retrieved all Travel Agencies");
         return agencyService.findAgencies();
     }
 
@@ -69,11 +67,10 @@ public class TravelAgencyController {
             description = "Создает новое туристическе агенство"
                     + " и добавляет его в базу данных."
     )
-    public String createTravelAgency(
-            final @RequestBody TravelAgency newTravelAgency) {
+    public ResponseEntity<String> createTravelAgency(@RequestBody TravelAgency newTravelAgency) {
         agencyService.save(newTravelAgency);
-        LOGGER.info("Create Travel Agencies");
-        return "Successfully created a new agency";
+        LOGGER.info("Created new Travel Agency");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created a new agency");
     }
 
     @DeleteMapping("/{id}")
@@ -82,17 +79,14 @@ public class TravelAgencyController {
             summary = "Удалить туристическое агенство",
             description = "Удаляет туристическое агенство из базы данных"
     )
-    public ResponseEntity<String> deleteTravelAgencyById(
-            final @PathVariable Long id) {
+    public ResponseEntity<String> deleteTravelAgency(@PathVariable Long id) {
         try {
             agencyService.deleteById(id);
-            LOGGER.info("Delete Travel Agencies by id");
-            return ResponseEntity
-                    .ok("Successfully deleted the agency with id: " + id);
+            LOGGER.info("Deleted Travel Agency by ID: {}", id);
+            return ResponseEntity.ok("Successfully deleted agency with ID: " + id);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(ERROR, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            LOGGER.error("Error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -103,18 +97,14 @@ public class TravelAgencyController {
             description = "Обновляет существуещее "
                     + "туристичесоке агенство в базе данных,"
     )
-    public ResponseEntity<String> handleAgencyUpdate(
-            final @PathVariable Long id,
-            final @RequestBody TravelAgencyDto travelAgency) {
+    public ResponseEntity<String> updateTravelAgency(@PathVariable Long id, @RequestBody TravelAgency updatedAgency) {
         try {
-            agencyService.update(id, travelAgency);
-            LOGGER.info("Update Travel Agencies by id");
-            return ResponseEntity
-                    .ok("Successfully updated journey with id " + id);
+            agencyService.update(id, updatedAgency);
+            LOGGER.info("Updated Travel Agency with ID: {}", id);
+            return ResponseEntity.ok("Successfully updated agency with ID: " + id);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(ERROR, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            LOGGER.error("Error: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

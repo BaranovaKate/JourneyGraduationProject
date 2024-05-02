@@ -26,6 +26,10 @@ public class AgencyService {
         }
         return agency;
     }
+    public void save(final TravelAgency travelAgency) {
+        travelAgencyRepository.save(travelAgency);
+    }
+
 
     public void deleteById(final Long id) {
         TravelAgency agencyToDelete = findAgencyById(id);
