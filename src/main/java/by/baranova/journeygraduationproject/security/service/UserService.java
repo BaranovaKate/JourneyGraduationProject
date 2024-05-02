@@ -1,8 +1,8 @@
 package by.baranova.journeygraduationproject.security.service;
 
-import by.ralovets.shop.Role;
-import by.ralovets.shop.entity.User;
-import by.ralovets.shop.repository.UserRepository;
+import by.baranova.journeygraduationproject.security.Role;
+import by.baranova.journeygraduationproject.security.entity.User;
+import by.baranova.journeygraduationproject.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

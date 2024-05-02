@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 public class AuthUtils {
 
-    public static final String PREFIX = "Bearer "; // Authorication: Bearer ...
+    public static final String PREFIX = "Bearer ";
 
     public String getAuthTokenFromHeader(HttpServletRequest request) {
         final String bearerString = request.getHeader(HttpHeaders.AUTHORIZATION);

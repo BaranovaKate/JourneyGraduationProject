@@ -1,14 +1,15 @@
 package by.baranova.journeygraduationproject.security.service;
 
-import by.ralovets.shop.entity.User;
-import by.ralovets.shop.model.ExtendedUserDetails;
-import by.ralovets.shop.repository.UserRepository;
+import by.baranova.journeygraduationproject.security.entity.User;
+import by.baranova.journeygraduationproject.security.model.ExtendedUserDetails;
+import by.baranova.journeygraduationproject.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor

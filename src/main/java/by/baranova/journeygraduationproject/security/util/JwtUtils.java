@@ -1,5 +1,6 @@
 package by.baranova.journeygraduationproject.security.util;
 
+import by.baranova.journeygraduationproject.security.config.property.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
