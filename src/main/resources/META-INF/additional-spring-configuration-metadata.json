@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.expirationMs",
+      "type": "java.lang.String",
+      "description": "Время жизни JWT в миллисекундах."
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Секрет, используемый для подписи JWT."
+    }
+  ]
+}

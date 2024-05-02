@@ -11,3 +11,7 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+app:
+  jwt:
+    expirationMs: 604800000
+    secret: defaultdefaultdefaultdefaultdefaultdefault
