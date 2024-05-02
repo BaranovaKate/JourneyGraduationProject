@@ -1,19 +1,13 @@
-app:
-  hibernate:
-    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
 spring:
-  mvc:
-    hidden-method:
-      filter:
-        enabled: true
+  application:
+    name: secured-students-application
+  datasource:
+    url: jdbc:postgresql://localhost:5432/journeys
+    username: postgres
+    password: 19072004m
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
 
