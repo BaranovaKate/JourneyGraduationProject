@@ -1,6 +1,6 @@
 package by.baranova.journeygraduationproject.controller;
 
-import by.baranova.journeygraduationproject.dto.JourneyDto;
+import by.baranova.journeygraduationproject.model.Journey;
 import by.baranova.journeygraduationproject.service.JourneyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +23,6 @@ import java.util.List;
         + "обновлять и удалять путешествия")
 public class JourneyController {
 
-    private static final String ERROR = "404 Not Found: {}";
-
     private final JourneyService journeyService;
 
     static final Logger LOGGER = LogManager.getLogger(JourneyController.class);
@@ -36,7 +34,7 @@ public class JourneyController {
             description = "Выводит список всех путешествий. "
                     + "Так же выполняет поиск по стране"
     )
-    public List<JourneyDto> findJourneys() {
+    public List<Journey> findJourneys() {
         LOGGER.info("Display all Journeys");
         return journeyService.findJourneys();
     }
@@ -48,14 +46,12 @@ public class JourneyController {
             description = "Выводит путешествие по id,"
                     + " содержащееся в базе данных"
     )
-    public ResponseEntity<JourneyDto> findJourney(
-            final @PathVariable("id") Long id) {
+    public ResponseEntity<Journey> findJourney(@PathVariable Long id) {
         try {
-            LOGGER.info("Display Journey by id");
-            JourneyDto journey = journeyService.findJourneyById(id);
+            Journey journey = journeyService.findJourneyById(id);
             return ResponseEntity.ok(journey);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(ERROR, e.getMessage());
+            LOGGER.error("Journey not found: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
@@ -66,11 +62,15 @@ public class JourneyController {
             summary = "Создать путешествие",
             description = "Создает новое путешествие в базе данных"
     )
-    public String handleJourneyCreation(
-            final @Valid @RequestBody JourneyDto journey) {
-        journeyService.save(journey);
-        LOGGER.info("Create Journey");
-        return "Successfully created a new journey";
+    public ResponseEntity<String> createJourney(@Valid @RequestBody Journey newJourney) {
+        try {
+            journeyService.save(newJourney);
+            LOGGER.info("Journey created: {}", newJourney);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created a new journey");
+        } catch (Exception e) {
+            LOGGER.error("Error creating journey: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error creating journey");
+        }
     }
 
     @PutMapping("/{id}")
@@ -79,20 +79,17 @@ public class JourneyController {
             summary = "Обновить путешествие",
             description = "Обновляет информацию о путешествии в базе данных"
     )
-    public ResponseEntity<String> handleJourneyUpdate(
-            final @PathVariable Long id,
-            final @Valid @RequestBody JourneyDto journey) {
+    public ResponseEntity<String> updateJourney(@PathVariable Long id, @Valid @RequestBody Journey updatedJourney) {
         try {
-            journeyService.update(id, journey);
-            LOGGER.info("Update Journey");
-            return ResponseEntity
-                    .ok("Successfully updated journey with id " + id);
+            journeyService.update(id, updatedJourney);
+            LOGGER.info("Journey updated: {}", updatedJourney);
+            return ResponseEntity.ok("Successfully updated journey with ID: " + id);
         } catch (EntityNotFoundException e) {
-            LOGGER
-                    .error(ERROR, e.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            LOGGER.error("Journey not found: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Journey not found");
+        } catch (Exception e) {
+            LOGGER.error("Error updating journey: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating journey");
         }
     }
 
@@ -103,17 +100,14 @@ public class JourneyController {
             description = "Удаляет путешествие по id,"
                     + " из базы данных"
     )
-    public ResponseEntity<String> handleJourneyDelete(
-            final @PathVariable Long id) {
+    public ResponseEntity<String> deleteJourney(@PathVariable Long id) {
         try {
             journeyService.deleteById(id);
-            LOGGER.info("Delete Journey by id");
-            return ResponseEntity
-                    .ok("Successfully deleted journey with id " + id);
+            LOGGER.info("Journey deleted");
+            return ResponseEntity.ok("Journey deleted");
         } catch (EntityNotFoundException e) {
-            LOGGER.error(ERROR, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
+            LOGGER.error("Journey not found: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Journey not found");
         }
     }
 }
