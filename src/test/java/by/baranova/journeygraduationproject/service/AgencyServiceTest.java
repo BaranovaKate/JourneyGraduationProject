@@ -34,7 +34,7 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testFindAgencyById_Found() {
+    void testFindAgencyById_Found() {
         TravelAgency agency = new TravelAgency();
         agency.setId(1L);
         agency.setName("Test Agency");
@@ -48,14 +48,14 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testFindAgencyById_NotFound() {
+    void testFindAgencyById_NotFound() {
         when(travelAgencyRepository.findAById(1L)).thenReturn(null);
 
         assertThrows(EntityNotFoundException.class, () -> agencyService.findAgencyById(1L));
     }
 
     @Test
-    public void testSave() {
+    void testSave() {
         TravelAgency agency = new TravelAgency();
         agency.setName("New Agency");
 
@@ -65,7 +65,7 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testDeleteById_Found() {
+    void testDeleteById_Found() {
         TravelAgency agency = new TravelAgency();
         agency.setId(1L);
         agency.setName("Agency to Delete");
@@ -90,7 +90,7 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testFindAgencies() {
+    void testFindAgencies() {
         List<TravelAgency> agencies = new ArrayList<>();
         agencies.add(new TravelAgency());
 
@@ -102,7 +102,7 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testUpdate_Found() {
+    void testUpdate_Found() {
         TravelAgency agency = new TravelAgency();
         agency.setId(1L);
         agency.setName("Old Name");
@@ -119,7 +119,7 @@ public class AgencyServiceTest {
     }
 
     @Test
-    public void testUpdate_NotFound() {
+    void testUpdate_NotFound() {
         TravelAgency updatedAgency = new TravelAgency();
         updatedAgency.setName("New Name");
 
