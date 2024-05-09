@@ -6,9 +6,11 @@ spring:
     username: postgres
     password: 19072004m
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect  # Добавление диалекта
     show-sql: true
     open-in-view: false
 app:
