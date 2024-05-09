@@ -25,17 +25,15 @@ public class TravelerService {
         return travelerRepository.findByIdWithDetails(id);
     }
 
-    public Traveler addTraveler(Traveler traveler) {
-        return travelerRepository.save(traveler);
+    public void addTraveler(Traveler traveler) {
+        travelerRepository.save(traveler);
     }
 
     @Transactional
-    public Traveler updateTraveler(Long id, Traveler updatedTraveler) {
+    public void updateTraveler(Long id, Traveler updatedTraveler) {
         Traveler existingTraveler = findTravelerById(id);
-
         existingTraveler.setName(updatedTraveler.getName());
-
-        return travelerRepository.save(existingTraveler);
+        travelerRepository.save(existingTraveler);
     }
 
 
@@ -48,7 +46,5 @@ public class TravelerService {
             journeyRepository.save(journey);
         }
         travelerRepository.delete(traveler);
-
     }
-
 }
