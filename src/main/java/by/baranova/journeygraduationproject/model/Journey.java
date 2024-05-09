@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,14 +24,24 @@ public class Journey {
     @Column(name = "town", nullable = false, length = CONST)
     private String town;
 
-    @Column(name = "dateToJourney", nullable = false)
+    @Column(name = "date_to_journey", nullable = false)
     private LocalDate dateToJourney;
 
-    @Column(name = "dateFromJourney", nullable = false)
+    @Column(name = "date_from_journey", nullable = false)
     private LocalDate dateFromJourney;
 
     @ManyToOne
     @JoinColumn(name = "travel_agency_id", nullable = false)
     @JsonIgnoreProperties("journeys")
     private TravelAgency travelAgency;
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "journey_traveler",
+            joinColumns = @JoinColumn(name = "journey_id"),
+            inverseJoinColumns = @JoinColumn(name = "traveler_id")
+    )
+    @JsonIgnoreProperties("journeys")
+    private List<Traveler> travelers;
 }

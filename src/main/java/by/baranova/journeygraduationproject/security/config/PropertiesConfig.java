@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationPropertiesScan(basePackages = "by.ralovets.shop.config.property")
+@ConfigurationPropertiesScan(basePackages = "by.baranova.journeygraduationproject.security.config.property")
 public class PropertiesConfig {
 }
