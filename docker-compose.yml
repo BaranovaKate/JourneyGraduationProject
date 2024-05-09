@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 19072004m
+      POSTGRES_DB: journeys
+    ports:
+      - '5432:5432'
+    networks:
+      - journeys-network
+
+  app:
+    image: javajourney
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 19072004m
+      DB_NAME: journeys
+      DB_HOST: db:5432
+    depends_on:
+      - db
+    networks:
+      - journeys-network
+
+networks:
+  journeys-network:
+    driver: bridge
