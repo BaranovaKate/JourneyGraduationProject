@@ -32,18 +32,14 @@ public class JourneyService {
     }
 
     public void update(final Long id, final Journey updatedJourney) {
-        Journey journey = journeyRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Journey with ID " + id + " not found"));
-
-        journeyRepository.updateJourney(
-                id,
-                updatedJourney.getCountry(),
-                updatedJourney.getTown(),
-                updatedJourney.getDateToJourney(),
-                updatedJourney.getDateFromJourney(),
-                updatedJourney.getTravelAgency().getId()
-        );
+        Journey journey = findJourneyById(id);
+        journey.setTown(updatedJourney.getTown());
+        journey.setCountry(updatedJourney.getCountry());
+        journey.setDateToJourney(updatedJourney.getDateToJourney());
+        journey.setDateFromJourney(updatedJourney.getDateFromJourney());
+        journey.setTravelAgency(updatedJourney.getTravelAgency());
+        journey.setTravelers(updatedJourney.getTravelers());
+        journeyRepository.save(journey);
     }
 
 }
