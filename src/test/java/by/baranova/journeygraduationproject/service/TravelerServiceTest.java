@@ -15,10 +15,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class TravelerServiceTest {
+public class TravelerServiceTest {
 
     @Mock
     private TravelerRepository travelerRepository;
@@ -30,112 +29,86 @@ class TravelerServiceTest {
     private TravelerService travelerService;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGetAllTravelers() {
-        // Given
+    public void testGetAllTravelers() {
         List<Traveler> travelers = new ArrayList<>();
-        Traveler traveler1 = new Traveler();
-        Traveler traveler2 = new Traveler();
-        travelers.add(traveler1);
-        travelers.add(traveler2);
-
+        travelers.add(new Traveler());
         when(travelerRepository.findAllWithDetails()).thenReturn(travelers);
 
-        // When
         List<Traveler> result = travelerService.getAllTravelers();
 
-        // Then
-        assertEquals(2, result.size());
+        assertNotNull(result);
+        assertEquals(1, result.size());
         verify(travelerRepository, times(1)).findAllWithDetails();
     }
 
     @Test
-    void testFindTravelerById() {
-        // Given
-        Long id = 1L;
+    public void testFindTravelerById_Success() {
         Traveler traveler = new Traveler();
-        traveler.setId(id);
+        traveler.setId(1L);
+        when(travelerRepository.findByIdWithDetails(1L)).thenReturn(traveler);
 
-        when(travelerRepository.findByIdWithDetails(id)).thenReturn(traveler);
+        Traveler result = travelerService.findTravelerById(1L);
 
-        // When
-        Traveler result = travelerService.findTravelerById(id);
-
-        // Then
-        assertEquals(id, result.getId());
-        verify(travelerRepository, times(1)).findByIdWithDetails(id);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        verify(travelerRepository, times(1)).findByIdWithDetails(1L);
     }
 
     @Test
-    void testAddTraveler() {
-        // Given
+    public void testFindTravelerById_NotFound() {
+
+        when(travelerRepository.findByIdWithDetails(1L)).thenReturn(null);
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            travelerService.findTravelerById(1L);
+        });
+    }
+
+    @Test
+    public void testAddTraveler() {
         Traveler traveler = new Traveler();
-
-        // When
         travelerService.addTraveler(traveler);
-
-        // Then
         verify(travelerRepository, times(1)).save(traveler);
     }
 
     @Test
-    void testUpdateTraveler() {
-        // Given
-        Long id = 1L;
+    public void testUpdateTraveler() {
         Traveler existingTraveler = new Traveler();
-        existingTraveler.setId(id);
+        existingTraveler.setId(1L);
         existingTraveler.setName("Old Name");
 
         Traveler updatedTraveler = new Traveler();
         updatedTraveler.setName("New Name");
 
-        when(travelerRepository.findByIdWithDetails(id)).thenReturn(existingTraveler);
+        when(travelerRepository.findByIdWithDetails(1L)).thenReturn(existingTraveler);
 
-        // When
-        travelerService.updateTraveler(id, updatedTraveler);
+        travelerService.updateTraveler(1L, updatedTraveler);
 
-        // Then
         assertEquals("New Name", existingTraveler.getName());
         verify(travelerRepository, times(1)).save(existingTraveler);
     }
 
-//    @Test
-//    void testDeleteTraveler() {
-//        // Given
-//        Long id = 1L;
-//        Traveler traveler = new Traveler();
-//        traveler.setId(id);
-//
-//        Journey journey = new Journey();
-//        journey.setId(1L);
-//        journey.getTravelers().add(traveler);
-//
-//        List<Journey> journeys = List.of(journey);
-//        traveler.setJourneys(journeys);
-//
-//        when(travelerRepository.findByIdWithDetails(id)).thenReturn(traveler);
-//
-//        // When
-//        travelerService.deleteTraveler(id);
-//
-//        // Then
-//        verify(travelerRepository, times(1)).delete(traveler);
-//        verify(journeyRepository, times(1)).save(journey);
-//        assertFalse(journey.getTravelers().contains(traveler));
-//    }
+    @Test
+    public void testDeleteTraveler() {
+        // Given
+        Traveler traveler = new Traveler();
+        traveler.setId(1L);
+        Journey journey = new Journey();
+        journey.setTravelers(new ArrayList<>(List.of(traveler)));
 
-//    @Test
-//    void testFindTravelerById_NotFound() {
-//        // Given
-//        Long id = 1L;
-//
-//        when(travelerRepository.findByIdWithDetails(id)).thenReturn(null);
-//
-//        // When/Then
-//        assertThrows(EntityNotFoundException.class, () -> travelerService.findTravelerById(id));
-//    }
+        traveler.setJourneys(new ArrayList<>(List.of(journey)));
+
+        when(travelerRepository.findByIdWithDetails(1L)).thenReturn(traveler);
+
+        travelerService.deleteTraveler(1L);
+
+        verify(travelerRepository, times(1)).delete(traveler);
+        verify(journeyRepository, times(1)).save(journey);
+        assertFalse(journey.getTravelers().contains(traveler));
+    }
 }

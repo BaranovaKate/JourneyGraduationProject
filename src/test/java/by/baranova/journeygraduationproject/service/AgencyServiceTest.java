@@ -94,7 +94,7 @@ public class AgencyServiceTest {
         List<TravelAgency> agencies = new ArrayList<>();
         agencies.add(new TravelAgency());
 
-        when(travelAgencyRepository.findAllWithJourneys()).thenReturn(agencies);
+        when(travelAgencyRepository.findAll()).thenReturn(agencies);
 
         List<TravelAgency> result = agencyService.findAgencies();
 

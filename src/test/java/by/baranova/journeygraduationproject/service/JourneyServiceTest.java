@@ -5,119 +5,95 @@ import by.baranova.journeygraduationproject.repository.JourneyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+public class JourneyServiceTest {
 
-class JourneyServiceTest {
-
-    @Mock
     private JourneyRepository journeyRepository;
-
-    @InjectMocks
     private JourneyService journeyService;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        journeyRepository = mock(JourneyRepository.class);
+        journeyService = new JourneyService(journeyRepository);
     }
 
     @Test
-    void testFindJourneyById_Success() {
-        // Given
-        Journey expectedJourney = new Journey();
-        expectedJourney.setId(1L);
-        when(journeyRepository.findById(1L)).thenReturn(Optional.of(expectedJourney));
+    void testFindJourneyById_ExistingJourney() {
+        Long id = 1L;
+        Journey existingJourney = new Journey();
+        existingJourney.setId(id);
+        when(journeyRepository.findJourneyWithTravelersAndAgenciesById(id)).thenReturn(Optional.of(existingJourney));
 
-        // When
-        Journey journey = journeyService.findJourneyById(1L);
+        Journey foundJourney = journeyService.findJourneyById(id);
 
-        // Then
-        assertNotNull(journey);
-        assertEquals(1L, journey.getId());
+        assertNotNull(foundJourney);
+        assertEquals(existingJourney.getId(), foundJourney.getId());
     }
 
     @Test
-    void testFindJourneyById_NotFound() {
-        // Given
-        when(journeyRepository.findById(1L)).thenReturn(Optional.empty());
+    void testFindJourneyById_NonExistingJourney() {
+        Long id = 1L;
+        when(journeyRepository.findJourneyWithTravelersAndAgenciesById(id)).thenReturn(Optional.empty());
 
-        // When
-        EntityNotFoundException exception = assertThrows(
-                EntityNotFoundException.class,
-                () -> journeyService.findJourneyById(1L)
-        );
-
-        // Then
-        assertEquals("Journey with ID 1 not found", exception.getMessage());
+        assertThrows(EntityNotFoundException.class, () -> journeyService.findJourneyById(id));
     }
 
     @Test
     void testDeleteById() {
-        // Given
-        doNothing().when(journeyRepository).deleteById(1L);
+        Long id = 1L;
 
-        // When
-        journeyService.deleteById(1L);
+        journeyService.deleteById(id);
 
-        // Then
-        verify(journeyRepository, times(1)).deleteById(1L);
+        verify(journeyRepository, times(1)).deleteById(id);
     }
 
     @Test
     void testFindJourneys() {
-        // Given
         List<Journey> journeys = new ArrayList<>();
-        Journey journey1 = new Journey();
-        Journey journey2 = new Journey();
-        journeys.add(journey1);
-        journeys.add(journey2);
-        when(journeyRepository.findAll()).thenReturn(journeys);
+        journeys.add(new Journey());
+        journeys.add(new Journey());
+        when(journeyRepository.findAllWithTravelersAndAgencies()).thenReturn(journeys);
 
-        // When
-        List<Journey> result = journeyService.findJourneys();
+        List<Journey> foundJourneys = journeyService.findJourneys();
 
-        // Then
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(journeys.size(), foundJourneys.size());
     }
 
     @Test
     void testSave() {
-        // Given
         Journey journey = new Journey();
-        journey.setId(1L); // Добавляем ID к объекту, чтобы симулировать успешное сохранение
 
-        when(journeyRepository.save(journey)).thenReturn(journey);
-
-        // When
         journeyService.save(journey);
 
-        // Then
         verify(journeyRepository, times(1)).save(journey);
     }
 
-
-
     @Test
-    void testUpdate_NotFound() {
-        // Given
-        when(journeyRepository.findById(1L)).thenReturn(Optional.empty());
+    void testUpdate() {
+        Long id = 1L;
+        Journey existingJourney = new Journey();
+        existingJourney.setId(id);
+        Journey updatedJourney = new Journey();
+        updatedJourney.setId(id);
+        updatedJourney.setCountry("New Country");
+        updatedJourney.setTown("New Town");
+        updatedJourney.setDateToJourney(LocalDate.now());
+        updatedJourney.setDateFromJourney(LocalDate.now().plusDays(7));
 
-        // When
-        EntityNotFoundException exception = assertThrows(
-                EntityNotFoundException.class,
-                () -> journeyService.update(1L, new Journey())
-        );
+        when(journeyRepository.findJourneyWithTravelersAndAgenciesById(id)).thenReturn(Optional.of(existingJourney));
 
-        // Then
-        assertEquals("Journey with ID 1 not found", exception.getMessage());
+        journeyService.update(id, updatedJourney);
+
+        verify(journeyRepository, times(1)).save(existingJourney);
+        assertEquals(updatedJourney.getCountry(), existingJourney.getCountry());
+        assertEquals(updatedJourney.getTown(), existingJourney.getTown());
+        assertEquals(updatedJourney.getDateToJourney(), existingJourney.getDateToJourney());
+        assertEquals(updatedJourney.getDateFromJourney(), existingJourney.getDateFromJourney());
     }
 }
