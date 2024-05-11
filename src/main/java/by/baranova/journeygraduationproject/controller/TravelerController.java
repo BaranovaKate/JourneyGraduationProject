@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,50 +26,52 @@ public class TravelerController {
     @GetMapping
     @Operation(
             method = "GET",
-            summary = "Получить список всех туристических агентств",
-            description = "Возвращает список всех туристических агентств"
+            summary = "Получить список всех путешественников ",
+            description = "Возвращает список всех путешественников"
     )
     public ResponseEntity<List<Traveler>> getAllTravelers() {
         List<Traveler> travelers = travelerService.getAllTravelers();
-        LOGGER.info("Retrieved all Travel Agencies");
+        LOGGER.info("Display all travelers");
         return ResponseEntity.ok(travelers);
     }
 
     @GetMapping("/{id}")
     @Operation(
             method = "GET",
-            summary = "Получить туристическое агентство по ID",
-            description = "Возвращает туристическое агентство по ID"
+            summary = "Получить Путешественника по ID",
+            description = "Возвращает путешественника по ID"
     )
     public ResponseEntity<Traveler> getTravelerById(@PathVariable Long id) {
         try {
-            LOGGER.info("Fetching Travel Agency with ID: {}", id);
+            LOGGER.info("Traveler with ID: {}", id);
             Traveler traveler = travelerService.findTravelerById(id);
             return ResponseEntity.ok(traveler);
         } catch (EntityNotFoundException e) {
-            LOGGER.error("Travel Agency not found with ID: {}", id);
+            LOGGER.error("Traveler not found with ID: {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "POST",
-            summary = "Создать новое туристическое агентство",
-            description = "Создает новое туристическое агентство"
+            summary = "Создать нового путешественника",
+            description = "Создает нового путешественника"
     )
     public ResponseEntity<String> addTraveler(
             @RequestBody Traveler traveler) {
         travelerService.addTraveler(traveler);
-        LOGGER.info("Created new Travel Agency");
-        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created a new agency");
+        LOGGER.info("Created new Traveler");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created a traveler");
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "PUT",
-            summary = "Обновить туристическое агентство",
-            description = "Обновляет существующее туристическое агентство"
+            summary = "Обновить путешественника по id",
+            description = "Обновляет существующего путешественника"
     )
     public ResponseEntity<String> updateTraveler(
             @PathVariable Long id,
@@ -83,16 +86,17 @@ public class TravelerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "DELETE",
-            summary = "Удалить туристическое агентство",
-            description = "Удаляет туристическое агентство по ID"
+            summary = "Удалить путешественника по id",
+            description = "Удаляет путешесвенника по ID"
     )
     public ResponseEntity<String> deleteTraveler(@PathVariable Long id) {
         try {
             travelerService.deleteTraveler(id);
-            LOGGER.info("Deleted Travel Agency by ID: {}", id);
-            return ResponseEntity.ok("Successfully deleted agency with ID: " + id);
+            LOGGER.info("Deleted Traveler by ID: {}", id);
+            return ResponseEntity.ok("Successfully deleted traveler with ID: " + id);
         } catch (EntityNotFoundException e) {
             LOGGER.error("Error: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

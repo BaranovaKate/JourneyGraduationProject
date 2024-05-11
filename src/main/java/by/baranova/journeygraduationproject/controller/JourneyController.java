@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,6 +58,7 @@ public class JourneyController {
     }
 
     @PostMapping("/new")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "POST",
             summary = "Создать путешествие",
@@ -74,6 +76,7 @@ public class JourneyController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "PUT",
             summary = "Обновить путешествие",
@@ -94,6 +97,7 @@ public class JourneyController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "DELETE",
             summary = "Удалить путешествие по id",
