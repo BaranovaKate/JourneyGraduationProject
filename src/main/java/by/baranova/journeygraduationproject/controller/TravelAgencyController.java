@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -48,7 +49,7 @@ public class TravelAgencyController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping
     @Operation(
             method = "GET",
             summary = "Получить список всех тур агентств",
@@ -61,6 +62,7 @@ public class TravelAgencyController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "POST",
             summary = "Создать туристическое агенство",
@@ -74,6 +76,7 @@ public class TravelAgencyController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "DELETE",
             summary = "Удалить туристическое агенство",
@@ -91,6 +94,7 @@ public class TravelAgencyController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             method = "PUT",
             summary = "Обновить туристическое агентство",

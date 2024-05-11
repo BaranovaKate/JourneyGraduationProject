@@ -45,7 +45,7 @@ public class AgencyService {
 
 
     public List<TravelAgency> findAgencies() {
-        return travelAgencyRepository.findAllWithJourneys();
+        return travelAgencyRepository.findAll();
     }
 
     public void update(final Long id, final TravelAgency updatedAgency) {

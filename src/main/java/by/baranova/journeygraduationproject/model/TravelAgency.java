@@ -20,8 +20,4 @@ public class TravelAgency {
     @Column(name = "name", nullable = false, length = CONST)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "travelAgency",
-            cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("travelAgency")
-    private List<Journey> journeys;
 }
