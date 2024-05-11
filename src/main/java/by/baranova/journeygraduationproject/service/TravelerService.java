@@ -1,9 +1,11 @@
 package by.baranova.journeygraduationproject.service;
 
 import by.baranova.journeygraduationproject.model.Journey;
+import by.baranova.journeygraduationproject.model.TravelAgency;
 import by.baranova.journeygraduationproject.model.Traveler;
 import by.baranova.journeygraduationproject.repository.JourneyRepository;
 import by.baranova.journeygraduationproject.repository.TravelerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,13 @@ public class TravelerService {
     public List<Traveler> getAllTravelers() {
         return travelerRepository.findAllWithDetails();
     }
-
     public Traveler findTravelerById(Long id) {
-        return travelerRepository.findByIdWithDetails(id);
+       Traveler traveler = travelerRepository.findByIdWithDetails(id);
+        if (traveler == null) {
+            throw new EntityNotFoundException(
+                    "Traveller with ID " + id + " not found");
+        }
+        return traveler;
     }
 
     public void addTraveler(Traveler traveler) {

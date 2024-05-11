@@ -1,4 +1,5 @@
 package by.baranova.journeygraduationproject.service;
+
 import by.baranova.journeygraduationproject.model.Journey;
 import by.baranova.journeygraduationproject.repository.JourneyRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,7 +15,7 @@ public class JourneyService {
     private final JourneyRepository journeyRepository;
 
     public Journey findJourneyById(final Long id) {
-        return journeyRepository.findById(id)
+        return journeyRepository.findJourneyWithTravelersAndAgenciesById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Journey with ID " + id + " not found"));
     }
@@ -24,7 +25,7 @@ public class JourneyService {
     }
 
     public List<Journey> findJourneys() {
-        return journeyRepository.findAll();
+        return journeyRepository.findAllWithTravelersAndAgencies();
     }
 
     public void save(final Journey journey) {

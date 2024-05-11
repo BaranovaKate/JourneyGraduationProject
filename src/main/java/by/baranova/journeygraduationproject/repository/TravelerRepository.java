@@ -10,11 +10,6 @@ import java.util.List;
 
 @Repository
 public interface TravelerRepository extends JpaRepository<Traveler, Long> {
-    @Query("SELECT t FROM Traveler t LEFT JOIN FETCH t.journeys j " +
-            "LEFT JOIN FETCH j.travelAgency " +
-            "LEFT JOIN FETCH j.travelers WHERE t.id = :id")
-    Traveler findTravelerById(@Param("id") Long id);
-
     @Query("SELECT t FROM Traveler t LEFT JOIN FETCH t.journeys j LEFT JOIN FETCH j.travelAgency")
     List<Traveler> findAllWithDetails();
 
