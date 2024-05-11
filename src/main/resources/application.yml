@@ -14,4 +14,4 @@ spring:
 app:
   jwt:
     expirationMs: 604800000
-    secret: defaultdefaultdefaultdefaultdefaultdefault
+    secret: ${SECRET}
