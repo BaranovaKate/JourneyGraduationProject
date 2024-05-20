@@ -23,7 +23,6 @@ import java.util.List;
         description = "Данный контроллер позволяет получать,"
                 +  " добавлять, обновлять и удалять тур агенства")
 public class TravelAgencyController {
-    private static final String ERROR = "404 Not Found: {}";
 
     private final AgencyService agencyService;
 

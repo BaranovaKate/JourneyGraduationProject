@@ -29,7 +29,6 @@ public class AuthFacade {
         final String username = dto.getUsername();
         final String password = dto.getPassword();
 
-
         userService.createUser(username, password);
         authService.login(username, password);
 
