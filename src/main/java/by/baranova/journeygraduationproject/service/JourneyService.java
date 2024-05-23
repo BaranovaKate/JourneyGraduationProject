@@ -1,12 +1,14 @@
 package by.baranova.journeygraduationproject.service;
 
 import by.baranova.journeygraduationproject.model.Journey;
+import by.baranova.journeygraduationproject.model.TravelAgency;
 import by.baranova.journeygraduationproject.repository.JourneyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Service
@@ -41,6 +43,38 @@ public class JourneyService {
         journey.setTravelAgency(updatedJourney.getTravelAgency());
         journey.setTravelers(updatedJourney.getTravelers());
         journeyRepository.save(journey);
+    }
+
+
+    public void createJourneysBulk(List<Journey> journeyDtos, String agency) {
+        if (journeyDtos == null || journeyDtos.isEmpty()) {
+            throw new IllegalArgumentException("No journeys provided");
+        }
+        boolean agencyNameConflict = journeyDtos.stream()
+                .anyMatch(journeyDto -> {
+                    TravelAgency travelAgency = journeyDto.getTravelAgency();
+                    return travelAgency == null || !travelAgency.getName().equals(agency);
+                });
+        if (agencyNameConflict) {
+            throw new IllegalArgumentException("Agency name in URL does not" +
+                    " match agency name in provided journey data");
+        }
+        List<String> errors = journeyDtos.stream()
+                .map(journeyDto -> {
+                    try {
+                        journeyRepository.save(journeyDto);
+                        return null;
+                    } catch (Exception e) {
+                        return "Error creating journey: " + e.getMessage();
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException("Errors occurred during bulk creation:\n"
+                    + String.join("\n", errors));
+        }
     }
 
 }

@@ -114,4 +114,26 @@ public class JourneyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Journey not found");
         }
     }
+
+
+    @PostMapping("/new/bulk/{agency}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            method = "PUT",
+            summary = "Создать путешествие по агентству",
+            description = "Создает новое путешествие в базе данных"
+    )
+    public ResponseEntity<String> createJourneysBulk(@RequestBody List<Journey> journeyDtos,
+                                                     @PathVariable("agency") String agency) {
+        LOGGER.info("POST endpoint /journeys/new/bulk/{agency} was called");
+
+        try {
+            journeyService.createJourneysBulk(journeyDtos, agency);
+            return ResponseEntity.ok("Successfully created journeys in bulk for agency: " + agency);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
 }
